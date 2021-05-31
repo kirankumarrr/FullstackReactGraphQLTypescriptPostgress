@@ -18,3 +18,8 @@
 
 # Create new migration with current schema diff
 npx mikro-orm migration:create   
+
+# GraphQL Modules (Complete CRUD)
+npm i express apollo-server-express graphql type-graphql
+
+npm i -D @types/express

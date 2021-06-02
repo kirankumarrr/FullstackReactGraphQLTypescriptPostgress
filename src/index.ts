@@ -7,6 +7,7 @@ import { ApolloServer } from 'apollo-server-express'
 import { buildSchema } from "type-graphql";
 import { HelloReslover } from "./resolvers/hello";
 import { PostReslover } from "./resolvers/post";
+import { UserReslover } from "./resolvers/user";
 
 const main = async()=>{
     const orm = await MikroORM.init(mikroOrm)
@@ -21,7 +22,7 @@ const main = async()=>{
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers :[HelloReslover, PostReslover],
+            resolvers :[HelloReslover, PostReslover,UserReslover],
             validate : false
         }),
         context:()=>({ em:orm.em }) //passing orm for posting data into db

@@ -19,7 +19,12 @@
 # Create new migration with current schema diff
 npx mikro-orm migration:create   
 
-# GraphQL Modules (Complete CRUD)
+# GraphQL Modules (Complete CRUD) GraphQL/CRUD/MikrORM
 npm i express apollo-server-express graphql type-graphql
 
 npm i -D @types/express
+
+# GraphQL GUI : http://localhost:4000/graphql
+
+# User Session Creation is in progress.
+# Hashing : using argon2

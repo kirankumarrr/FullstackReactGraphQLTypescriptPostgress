@@ -1,6 +1,6 @@
 import { User } from '../entities/User'
 import { MyContext } from 'src/types'
-import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver } from 'type-graphql'
+import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver } from 'type-graphql'
 import argon2 from 'argon2' //Used for hasing (Alternative for bycrpt)
 
 @InputType()
@@ -34,10 +34,26 @@ class UserResponse{
 //  Graph QL Query
  @Resolver()
  export class UserReslover {
+
+    @Query(()=>User,{nullable:true})
+    async me( @Ctx() {em, req} : MyContext){
+        //your not logged in
+        //below we set userId during login route
+        console.log("session::::",req.session)
+        if(!req.session.userId){
+            return null
+        }
+
+        const user = await em.findOne(User,{id:req.session.userId})
+        return user;
+
+    }
+    
+
     @Mutation(()=>UserResponse)
     async register(
         @Arg('options') options: UsernamePasswordInput,
-        @Ctx() {em}: MyContext
+        @Ctx() {em, req}: MyContext
     ):Promise<UserResponse>{
 
         if(options.username.length<=2){
@@ -65,13 +81,18 @@ class UserResponse{
             }
         }
 
+        //store user id in session
+        // this will set a cookie on the user
+        //keep them logged in
+        req.session.userId = user.id 
+
         return {user}
     }
 
     @Mutation(()=>UserResponse)
     async login(
         @Arg('options') options: UsernamePasswordInput,
-        @Ctx() {em}: MyContext
+        @Ctx() {em, req}: MyContext
     ):Promise<UserResponse>{
 
         const user = await em.findOne(User, {username:options.username})
@@ -90,6 +111,8 @@ class UserResponse{
             }
         }
 
+        req.session.userId = user.id 
+        
         return {
             user
         }

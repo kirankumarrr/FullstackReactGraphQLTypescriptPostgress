@@ -28,3 +28,11 @@ npm i -D @types/express
 
 # User Session Creation is in progress.
 # Hashing : using argon2
+
+# Redis DataBase
+ # Link  :https://github.com/microsoftarchive/redis/releases/tag/win-3.2.100
+ # installing 
+    npm install redis connect-redis express-session
+    npm i --save-dev @types/redis
+    npm i --save-dev @types/connect-redis
+# set session for user when register/ login

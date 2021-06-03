@@ -21,10 +21,32 @@ const type_graphql_1 = require("type-graphql");
 const hello_1 = require("./resolvers/hello");
 const post_1 = require("./resolvers/post");
 const user_1 = require("./resolvers/user");
+const redis_1 = __importDefault(require("redis"));
+const express_session_1 = __importDefault(require("express-session"));
+const connect_redis_1 = __importDefault(require("connect-redis"));
+const constants_1 = require("./constants");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const orm = yield core_1.MikroORM.init(mikro_orm_config_1.default);
     orm.getMigrator().up();
     const app = express_1.default();
+    let RedisStore = connect_redis_1.default(express_session_1.default);
+    let redisClient = redis_1.default.createClient();
+    app.use(express_session_1.default({
+        store: new RedisStore({
+            client: redisClient,
+            disableTouch: true
+        }),
+        cookie: {
+            maxAge: 1000 * 60 * 24 * 365 * 10,
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: constants_1.__prod__
+        },
+        saveUninitialized: false,
+        secret: 'nsldkfsdlf',
+        resave: false,
+        name: 'qid'
+    }));
     app.get('/', (_, res) => {
         res.send('Hello');
     });
@@ -33,7 +55,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.HelloReslover, post_1.PostReslover, user_1.UserReslover],
             validate: false
         }),
-        context: () => ({ em: orm.em })
+        context: ({ req, res }) => ({ em: orm.em, req, res })
     });
     apolloServer.applyMiddleware({ app });
     app.listen(4000, () => {

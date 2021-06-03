@@ -36,3 +36,6 @@ npm i -D @types/express
     npm i --save-dev @types/redis
     npm i --save-dev @types/connect-redis
 # set session for user when register/ login
+
+# Next JS using chakra-ui
+    https://github.com/vercel/next.js/tree/canary/examples/with-chakra-ui
